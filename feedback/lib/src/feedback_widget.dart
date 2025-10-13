@@ -394,6 +394,8 @@ class _FeedbackLayoutDelegate extends MultiChildLayoutDelegate {
   void performLayout(Size size) {
     if (!displayFeedback) {
       layoutChild(_screenshotId, BoxConstraints.tight(size));
+      // Explicitly position at zero offset - THIS FIXED THE RIGHT/DOWN OFFSET ON ANDROID
+      positionChild(_screenshotId, Offset.zero);
       return;
     }
     // Lay out the controls.
