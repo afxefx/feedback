@@ -93,23 +93,11 @@ class _DraggableFeedbackSheetState extends State<_DraggableFeedbackSheet> {
     final double collapsedHeight = feedbackTheme.feedbackSheetHeight *
         query.size.height /
         (query.size.height - query.padding.top - query.viewInsets.bottom);
-    return Column(
+    final safeAreaTop = MediaQuery.of(context).padding.top;
+    return Stack(
       children: [
-        ValueListenableBuilder<void>(
-          valueListenable: widget.sheetProgress,
-          child: Container(
-            height: MediaQuery.of(context).padding.top,
-            color: FeedbackTheme.of(context).feedbackSheetColor,
-          ),
-          builder: (context, _, child) {
-            return Opacity(
-              // Use the curved progress value
-              opacity: widget.sheetProgress.value,
-              child: child,
-            );
-          },
-        ),
-        Expanded(
+        Padding(
+          padding: EdgeInsets.only(top: safeAreaTop),
           child: DraggableScrollableSheet(
             controller: BetterFeedback.of(context).sheetController,
             snap: true,
@@ -129,7 +117,6 @@ class _DraggableFeedbackSheetState extends State<_DraggableFeedbackSheet> {
                 },
                 child: Material(
                   color: FeedbackTheme.of(context).feedbackSheetColor,
-                  // A `ListView` makes the content here disappear.
                   child: DefaultTextEditingShortcuts(
                     child: Navigator(
                       onGenerateRoute: (_) {
@@ -147,6 +134,19 @@ class _DraggableFeedbackSheetState extends State<_DraggableFeedbackSheet> {
               );
             },
           ),
+        ),
+        ValueListenableBuilder<void>(
+          valueListenable: widget.sheetProgress,
+          child: Container(
+            height: safeAreaTop,
+            color: FeedbackTheme.of(context).feedbackSheetColor,
+          ),
+          builder: (context, _, child) {
+            return Opacity(
+              opacity: widget.sheetProgress.value,
+              child: child,
+            );
+          },
         ),
       ],
     );
