@@ -12,6 +12,11 @@ extension FeedbackSystemInsets on MediaQueryData {
 
   double get feedbackBottomInset => viewPadding.bottom;
 
+  /// Nav-bar inset for layout when the keyboard is closed. When [viewInsets.bottom]
+  /// is non-zero the keyboard already occupies the bottom edge.
+  double get feedbackLayoutBottomInset =>
+      viewInsets.bottom > 0 ? 0 : feedbackBottomInset;
+
   double get feedbackAvailableHeight =>
       size.height - feedbackTopInset - feedbackBottomInset - viewInsets.bottom;
 }
