@@ -10,6 +10,7 @@ import 'package:feedback/src/scale_and_fade.dart';
 import 'package:feedback/src/screenshot.dart';
 import 'package:feedback/src/theme/feedback_theme.dart';
 import 'package:feedback/src/utilities/back_button_interceptor.dart';
+import 'package:feedback/src/utilities/system_insets.dart';
 import 'package:flutter/material.dart';
 
 typedef FeedbackButtonPress = void Function(BuildContext context);
@@ -378,7 +379,9 @@ class _FeedbackLayoutDelegate extends MultiChildLayoutDelegate {
   final double sheetFraction;
   final double animationProgress;
 
-  double get safeAreaHeight => query.padding.top;
+  double get safeAreaHeight => query.feedbackTopInset;
+
+  double get bottomSystemInset => query.feedbackBottomInset;
 
   double get keyboardHeight => query.viewInsets.bottom;
 
@@ -449,7 +452,7 @@ class _FeedbackLayoutDelegate extends MultiChildLayoutDelegate {
       BoxConstraints.loose(
         Size(
           size.width,
-          size.height - query.viewInsets.bottom,
+          size.height - query.viewInsets.bottom - bottomSystemInset,
         ),
       ),
     ).height;
@@ -458,7 +461,8 @@ class _FeedbackLayoutDelegate extends MultiChildLayoutDelegate {
       Offset(
         0,
         size.height -
-            animationProgress * (sheetHeight + query.viewInsets.bottom),
+            animationProgress * (sheetHeight + query.viewInsets.bottom) -
+            bottomSystemInset,
       ),
     );
   }
