@@ -3,6 +3,7 @@
 import 'package:feedback/src/better_feedback.dart';
 import 'package:feedback/src/theme/feedback_theme.dart';
 import 'package:feedback/src/utilities/back_button_interceptor.dart';
+import 'package:feedback/src/utilities/system_insets.dart';
 import 'package:flutter/material.dart';
 
 /// Shows the text input in which the user can describe his feedback.
@@ -38,19 +39,16 @@ class FeedbackBottomSheet extends StatelessWidget {
           color: FeedbackTheme.of(context).feedbackSheetColor,
           // Pass a null scroll controller because the sheet is not drag
           // enabled.
-          child: SafeArea(
-            top: false,
-            child: Navigator(
-              onGenerateRoute: (_) {
-                return MaterialPageRoute<void>(
-                  builder: (_) => feedbackBuilder(
-                    context,
-                    onSubmit,
-                    null,
-                  ),
-                );
-              },
-            ),
+          child: Navigator(
+            onGenerateRoute: (_) {
+              return MaterialPageRoute<void>(
+                builder: (_) => feedbackBuilder(
+                  context,
+                  onSubmit,
+                  null,
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -91,17 +89,17 @@ class _DraggableFeedbackSheetState extends State<_DraggableFeedbackSheet> {
   Widget build(BuildContext context) {
     final FeedbackThemeData feedbackTheme = FeedbackTheme.of(context);
     final MediaQueryData query = MediaQuery.of(context);
-    // Recalculate the collapsed height to account for safe areas and keyboard.
+    // Recalculate the collapsed height to account for the top inset and keyboard.
+    // Bottom inset is handled by [_FeedbackLayoutDelegate].
     final double availableHeight = query.size.height -
-        query.padding.top -
-        query.padding.bottom -
+        query.feedbackTopInset -
         query.viewInsets.bottom;
     final double collapsedHeight = availableHeight <= 0
         ? feedbackTheme.feedbackSheetHeight
         : feedbackTheme.feedbackSheetHeight *
             query.size.height /
             availableHeight;
-    final safeAreaTop = query.padding.top;
+    final safeAreaTop = query.feedbackTopInset;
     return Stack(
       children: [
         Padding(
@@ -125,20 +123,17 @@ class _DraggableFeedbackSheetState extends State<_DraggableFeedbackSheet> {
                 },
                 child: Material(
                   color: FeedbackTheme.of(context).feedbackSheetColor,
-                  child: SafeArea(
-                    top: false,
-                    child: DefaultTextEditingShortcuts(
-                      child: Navigator(
-                        onGenerateRoute: (_) {
-                          return MaterialPageRoute<void>(
-                            builder: (_) => widget.feedbackBuilder(
-                              context,
-                              widget.onSubmit,
-                              scrollController,
-                            ),
-                          );
-                        },
-                      ),
+                  child: DefaultTextEditingShortcuts(
+                    child: Navigator(
+                      onGenerateRoute: (_) {
+                        return MaterialPageRoute<void>(
+                          builder: (_) => widget.feedbackBuilder(
+                            context,
+                            widget.onSubmit,
+                            scrollController,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
