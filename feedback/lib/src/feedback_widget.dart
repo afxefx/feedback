@@ -381,7 +381,7 @@ class _FeedbackLayoutDelegate extends MultiChildLayoutDelegate {
 
   double get safeAreaHeight => query.feedbackTopInset;
 
-  double get bottomSystemInset => query.feedbackBottomInset;
+  double get bottomSystemInset => query.feedbackLayoutBottomInset;
 
   double get keyboardHeight => query.viewInsets.bottom;
 
